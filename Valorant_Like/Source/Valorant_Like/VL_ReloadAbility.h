@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "VL_AbilityBase.h"
-#include "VL_FireAbility.generated.h"
+#include "VL_ReloadAbility.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class VALORANT_LIKE_API UVL_FireAbility : public UVL_AbilityBase
+class VALORANT_LIKE_API UVL_ReloadAbility : public UVL_AbilityBase
 {
 	GENERATED_BODY()
 public:
@@ -18,9 +18,9 @@ public:
 
 	virtual bool CanActivate() const override;
 
-	TSubclassOf<class AVL_Projectile> ProjectileClass;
+	int GetMaxAmmoCount() const;
 
 protected:
-	
-	float Damage = 20.0f;
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
+	int MaxAmmoCount = 30;
 };

@@ -3,27 +3,39 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "VL_Projectile.generated.h"
 
-UCLASS()
+UCLASS(config=Game)
 class VALORANT_LIKE_API AVL_Projectile : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	AVL_Projectile();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	/** Sphere collision component */
+	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
+	USphereComponent* CollisionComp;
+
+	/** Projectile movement component */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	UProjectileMovementComponent* ProjectileMovement;
+	
+protected:	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile)
+	int Damage = 0;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Damage = 20.0f;
+	AVL_Projectile();
 
+	/** called when projectile hits something */
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	/** Returns CollisionComp subobject **/
+	USphereComponent* GetCollisionComp() const;
+	/** Returns ProjectileMovement subobject **/
+	UProjectileMovementComponent* GetProjectileMovement() const;
+
+	void SetDamage(int NewDamage);
 };

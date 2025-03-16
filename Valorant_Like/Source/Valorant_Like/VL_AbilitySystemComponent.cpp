@@ -2,7 +2,10 @@
 
 
 #include "VL_AbilitySystemComponent.h"
+
+#include "VL_FireAbility.h"
 #include "VL_FPSCharacter.h"
+#include "VL_ReloadAbility.h"
 
 // Sets default values for this component's properties
 UVL_AbilitySystemComponent::UVL_AbilitySystemComponent()
@@ -14,21 +17,22 @@ void UVL_AbilitySystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AVL_FPSCharacter* OwnerCharacter = Cast<AVL_FPSCharacter>(GetOwner());
-	if (!OwnerCharacter) return;
+	ReloadAbility = NewObject<UVL_ReloadAbility>(this, ReloadAbilityClass);
+	FireAbility = NewObject<UVL_FireAbility>(this, FireAbilityClass);
+	CompetenceCAbility = NewObject<UVL_AbilityBase>(this, CompetenceCAbilityClass);
+	CompetenceXAbility = NewObject<UVL_AbilityBase>(this, CompetenceXAbilityClass);
+	Cast<UVL_FireAbility>(FireAbility)->ProjectileClass = ProjectileClass;
 
-	ReloadAbility = NewObject<UVL_AbilityBase>(this, OwnerCharacter->ReloadAbility);
-	FireAbility = NewObject<UVL_AbilityBase>(this, OwnerCharacter->FireAbility);
-	CompetenceCAbility = NewObject<UVL_AbilityBase>(this, OwnerCharacter->CompetenceCAbility);
-	CompetenceXAbility = NewObject<UVL_AbilityBase>(this, OwnerCharacter->CompetenceXAbility);
+	CurrentAmmoCount = ReloadAbility->GetMaxAmmoCount();
 }
 
 void UVL_AbilitySystemComponent::Fire()
 {
-	if (!ReloadAbility->CanActivate())
+	if (!FireAbility->CanActivate())
 	return;
 	
-	ReloadAbility->Activate();
+	FireAbility->Activate();
+	CurrentAmmoCount--;
 }
 
 void UVL_AbilitySystemComponent::Reload()
@@ -65,5 +69,15 @@ void UVL_AbilitySystemComponent::ActivateAbility(FName AbilityName)
 			break;
 		}
 	}
+}
+
+int UVL_AbilitySystemComponent::GetCurrentAmmoCount() const
+{
+	return CurrentAmmoCount;
+}
+
+void UVL_AbilitySystemComponent::SetCurrentAmmoCount(int NewAmmoCount)
+{
+	CurrentAmmoCount = NewAmmoCount;
 }
 

@@ -3,11 +3,14 @@
 
 #include "VL_FireAbility.h"
 #include "VL_FPSCharacter.h"
-#include "Camera/CameraComponent.h"
 
 void UVL_FireAbility::Activate()
 {
-	AVL_FPSCharacter* Character = Cast<AVL_FPSCharacter>(GetOuter());
+	UVL_AbilitySystemComponent* CharacterASC = Cast<UVL_AbilitySystemComponent>(GetOuter());
+	if (!CharacterASC) return;
+	
+	AVL_FPSCharacter* Character = Cast<AVL_FPSCharacter>(CharacterASC->GetOuter());
+	
 	if (!Character || !ProjectileClass) return;
 
 	UWorld* const World = GetWorld();
@@ -25,10 +28,20 @@ void UVL_FireAbility::Activate()
 
 		if (SpawnedProjectile)
 		{
-			for (UVL_AbilityBase* Ability : Character->GetAbilitySystemComponent()->GetActiveAbilities())
+			for (UVL_AbilityBase* Ability : CharacterASC->GetActiveAbilities())
 			{
 				Ability->ModifyProjectile(SpawnedProjectile);
 			}
+
+			SpawnedProjectile->SetDamage(Damage);
 		}
 	}
+}
+
+bool UVL_FireAbility::CanActivate() const
+{
+	UVL_AbilitySystemComponent* CharacterASC = Cast<UVL_AbilitySystemComponent>(GetOuter());
+	if (!CharacterASC || CharacterASC->GetCurrentAmmoCount() == 0) return false;
+	
+	return true;
 }

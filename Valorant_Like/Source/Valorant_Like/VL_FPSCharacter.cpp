@@ -4,6 +4,7 @@
 #include "VL_FPSCharacter.h"
 
 #include "EnhancedInputComponent.h"
+#include "VL_ReloadAbility.h"
 
 // Sets default values
 AVL_FPSCharacter::AVL_FPSCharacter()
@@ -11,6 +12,8 @@ AVL_FPSCharacter::AVL_FPSCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
+
+	AbilitySystemComponent = CreateDefaultSubobject<UVL_AbilitySystemComponent>(TEXT("AbilitySystemComp"));
 }
 
 UVL_AbilitySystemComponent* AVL_FPSCharacter::GetAbilitySystemComponent() const
@@ -22,7 +25,6 @@ UVL_AbilitySystemComponent* AVL_FPSCharacter::GetAbilitySystemComponent() const
 void AVL_FPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called to bind functionality to input

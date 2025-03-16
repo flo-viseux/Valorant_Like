@@ -17,19 +17,9 @@ public:
 	// Sets default values for this character's properties
 	AVL_FPSCharacter();
 	
-	UPROPERTY(EditDefaultsOnly, Category="Abilities")
-	TSubclassOf<UVL_AbilityBase> ReloadAbility;
-	UPROPERTY(EditDefaultsOnly, Category="Abilities")
-	TSubclassOf<UVL_AbilityBase> FireAbility;
-	UPROPERTY(EditDefaultsOnly, Category="Abilities")
-	TSubclassOf<UVL_AbilityBase> CompetenceXAbility;
-	UPROPERTY(EditDefaultsOnly, Category="Abilities")
-	TSubclassOf<UVL_AbilityBase> CompetenceCAbility;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* FireAction;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	FVector MuzzleOffset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ReloadAction;
@@ -40,18 +30,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* CompetenceXAction;
 
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Attributes")
+	FVector MuzzleOffset;
+	
 	UVL_AbilitySystemComponent* GetAbilitySystemComponent() const;
+
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Abilities")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Attributes")
 	UVL_AbilitySystemComponent* AbilitySystemComponent;
 
 	void StartFiring();
 	void Reload();
 	void UseCompetenceX();
 	void UseCompentenceC();
-
 };
