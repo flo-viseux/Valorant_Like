@@ -30,7 +30,10 @@ void UVL_FireAbility::Activate()
 		{
 			for (UVL_AbilityBase* Ability : CharacterASC->GetActiveAbilities())
 			{
-				Ability->ModifyProjectile(SpawnedProjectile);
+				if (Ability->bIsBulletModifier)
+					Ability->ModifyProjectile(SpawnedProjectile);
+
+				CharacterASC->RemoveActiveAbility(Ability);
 			}
 
 			SpawnedProjectile->SetDamage(Damage);

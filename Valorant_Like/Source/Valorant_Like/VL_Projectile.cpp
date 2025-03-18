@@ -26,22 +26,56 @@ AVL_Projectile::AVL_Projectile()
 	// Use a ProjectileMovementComponent to govern this projectile's movement
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComp"));
 	ProjectileMovement->UpdatedComponent = CollisionComp;
-	ProjectileMovement->InitialSpeed = 3000.f;
-	ProjectileMovement->MaxSpeed = 3000.f;
+	ProjectileMovement->InitialSpeed = 5000.f;
+	ProjectileMovement->MaxSpeed = 5000.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
-	ProjectileMovement->bShouldBounce = true;
+	ProjectileMovement->bShouldBounce = false;
+    ProjectileMovement->ProjectileGravityScale = 0.0f;
+	ProjectileMovement->bInitialVelocityInLocalSpace = true;
+	ProjectileMovement->OnProjectileBounce.AddDynamic(this, &AVL_Projectile::OnBounce);
+	MaxBounces = 0;
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
 }
 
-void AVL_Projectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	FVector NormalImpulse, const FHitResult& Hit)
+void AVL_Projectile::OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity)
 {
-	if (OtherActor && OtherActor != GetOwner())
+	if (ImpactResult.ImpactNormal.Z > 0.7f || !bIsSlowProjectile)  // 0.7  = cos(45°) -> plane surface
+	{
+		BounceCount++;
+
+		if (bIsSlowProjectile)
+		{
+			// TODO create slow area
+		}
+	}
+    
+	if (BounceCount > MaxBounces)
 	{
 		Destroy();
 	}
+}
+
+void AVL_Projectile::SetMaxBoundCount(int MaxBoundsCount)
+{
+	MaxBounces = MaxBoundsCount;
+}
+
+void AVL_Projectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                           FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (!bIsSlowProjectile)
+	{
+		// TODO : apply damage if is valid
+	}
+	
+	if (OtherActor && OtherActor != GetOwner() && ProjectileMovement->bShouldBounce == false)
+	{
+		Destroy();
+	}
+
+	ProjectileMovement->ProjectileGravityScale = 1.0f;
 }
 
 USphereComponent* AVL_Projectile::GetCollisionComp() const

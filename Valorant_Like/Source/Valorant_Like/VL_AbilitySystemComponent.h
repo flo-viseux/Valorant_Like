@@ -28,6 +28,10 @@ public:
 
 	void ActivateAbility(FName AbilityName);
 	TArray<UVL_AbilityBase*> GetActiveAbilities() const { return ActiveAbilities; }
+	
+	void AddActiveAbility(UVL_AbilityBase* NewAbility);
+
+	void RemoveActiveAbility(UVL_AbilityBase* Ability);
 
 	
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
@@ -46,7 +50,6 @@ public:
 protected:
 	UPROPERTY()
 	TArray<UVL_AbilityBase*> ActiveAbilities;
-
 	
 	UPROPERTY(VisibleAnywhere, Category="Attributes")
 	UVL_ReloadAbility* ReloadAbility;

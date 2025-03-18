@@ -16,7 +16,8 @@ class VALORANT_LIKE_API UVL_AbilityBase : public UObject
 	
 public:
 	bool bIsBulletModifier;
-    
+
+	virtual void Init();
 	virtual void Activate();
 	virtual void ModifyProjectile(AVL_Projectile* Projectile);
 	virtual bool CanActivate() const;

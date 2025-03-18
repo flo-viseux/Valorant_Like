@@ -24,9 +24,19 @@ class VALORANT_LIKE_API AVL_Projectile : public AActor
 protected:	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile)
 	int Damage = 0;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile)
+	int32 MaxBounces = 0;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile)
+	int32 BounceCount = 0;
+	
 
 public:
 	AVL_Projectile();
+
+	UFUNCTION()
+	void OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity);
 
 	/** called when projectile hits something */
 	UFUNCTION()
@@ -38,4 +48,8 @@ public:
 	UProjectileMovementComponent* GetProjectileMovement() const;
 
 	void SetDamage(int NewDamage);
+	
+	void SetMaxBoundCount(int MaxBounds);
+
+	bool bIsSlowProjectile = false;
 };

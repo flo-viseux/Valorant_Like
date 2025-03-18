@@ -14,4 +14,16 @@ class VALORANT_LIKE_API UVL_SlowAbility : public UVL_AbilityBase
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void ModifyProjectile(AVL_Projectile* Projectile) override;
+
+	virtual bool CanActivate() const override;
+
+	virtual void Activate() override;
+
+	virtual void Init() override;
+
+protected:
+
+	bool bAlreadyUsed = false;
 };

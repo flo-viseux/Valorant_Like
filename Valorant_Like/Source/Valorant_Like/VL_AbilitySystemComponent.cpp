@@ -18,9 +18,13 @@ void UVL_AbilitySystemComponent::BeginPlay()
 	Super::BeginPlay();
 
 	ReloadAbility = NewObject<UVL_ReloadAbility>(this, ReloadAbilityClass);
+	ReloadAbility->Init();
 	FireAbility = NewObject<UVL_FireAbility>(this, FireAbilityClass);
+	FireAbility->Init();
 	CompetenceCAbility = NewObject<UVL_AbilityBase>(this, CompetenceCAbilityClass);
+	CompetenceCAbility->Init();
 	CompetenceXAbility = NewObject<UVL_AbilityBase>(this, CompetenceXAbilityClass);
+	CompetenceXAbility->Init();
 	Cast<UVL_FireAbility>(FireAbility)->ProjectileClass = ProjectileClass;
 
 	CurrentAmmoCount = ReloadAbility->GetMaxAmmoCount();
@@ -70,6 +74,23 @@ void UVL_AbilitySystemComponent::ActivateAbility(FName AbilityName)
 		}
 	}
 }
+
+void UVL_AbilitySystemComponent::AddActiveAbility(UVL_AbilityBase* NewAbility)
+{
+	if (ActiveAbilities.Contains(NewAbility))
+		return;
+	
+	ActiveAbilities.Add(NewAbility);
+}
+
+void UVL_AbilitySystemComponent::RemoveActiveAbility(UVL_AbilityBase* Ability)
+{
+	if (!ActiveAbilities.Contains(Ability))
+		return;
+	
+	ActiveAbilities.Remove(Ability);
+}
+
 
 int UVL_AbilitySystemComponent::GetCurrentAmmoCount() const
 {

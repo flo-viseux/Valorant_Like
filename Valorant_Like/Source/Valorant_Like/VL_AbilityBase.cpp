@@ -3,6 +3,11 @@
 
 #include "VL_AbilityBase.h"
 
+void UVL_AbilityBase::Init()
+{
+	bIsBulletModifier = false;
+}
+
 void UVL_AbilityBase::Activate()
 {
 }
