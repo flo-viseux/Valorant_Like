@@ -25,6 +25,8 @@ public:
 	void Reload();
 	void UseCompetenceX();
 	void UseCompetenceC();
+	void Slowed(float Slow);
+	void Hit(float Damage);
 
 	void ActivateAbility(FName AbilityName);
 	TArray<UVL_AbilityBase*> GetActiveAbilities() const { return ActiveAbilities; }
@@ -46,6 +48,14 @@ public:
 	int GetCurrentAmmoCount() const;
 
 	void SetCurrentAmmoCount(int NewAmmoCount);
+	
+	int GetCurrentSpeed() const;
+
+	void SetCurrentSpeed(int NewAmmoCount);
+
+	int GetCurrentHealth() const;
+
+	void SetCurrentHealth(int NewAmmoCount);
 
 protected:
 	UPROPERTY()
@@ -66,5 +76,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Attributes")
 	TSubclassOf<class AVL_Projectile> ProjectileClass;
 
+	
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
+	float InitialHealth;
+
 	int CurrentAmmoCount = 0;
+	
+	float CurrentSpeed = 0;
+
+	float CurrentHealth = 0;
 };

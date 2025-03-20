@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "VL_ReloadAbility.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AVL_FPSCharacter::AVL_FPSCharacter()
@@ -25,6 +26,7 @@ UVL_AbilitySystemComponent* AVL_FPSCharacter::GetAbilitySystemComponent() const
 void AVL_FPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	AbilitySystemComponent->SetCurrentSpeed(GetCharacterMovement()->MaxWalkSpeed);
 }
 
 // Called to bind functionality to input
@@ -59,5 +61,22 @@ void AVL_FPSCharacter::UseCompetenceX()
 void AVL_FPSCharacter::UseCompentenceC()
 {
 	AbilitySystemComponent->UseCompetenceC();
+}
+
+void AVL_FPSCharacter::Hit(float Damage)
+{
+	AbilitySystemComponent->UseCompetenceC();
+}
+
+void AVL_FPSCharacter::Slowed(float Slow)
+{
+	AbilitySystemComponent->UseCompetenceC();
+}
+
+void AVL_FPSCharacter::Move(const FInputActionValue& Value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = AbilitySystemComponent->GetCurrentSpeed();
+	
+	Super::Move(Value);
 }
 

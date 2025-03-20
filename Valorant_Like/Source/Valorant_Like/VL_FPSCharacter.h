@@ -48,4 +48,7 @@ protected:
 	void Reload();
 	void UseCompetenceX();
 	void UseCompentenceC();
+	void Hit(float Damage);
+	void Slowed(float Slow);
+	virtual void Move(const FInputActionValue& Value) override;
 };

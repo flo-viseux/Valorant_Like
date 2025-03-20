@@ -12,6 +12,18 @@ void UVL_AbilityBase::Activate()
 {
 }
 
+void UVL_AbilityBase::Deactivate()
+{
+}
+
+void UVL_AbilityBase::Activate(float Value)
+{
+}
+
+void UVL_AbilityBase::Deactivate(float Value)
+{
+}
+
 void UVL_AbilityBase::ModifyProjectile(AVL_Projectile* Projectile)
 {
 }

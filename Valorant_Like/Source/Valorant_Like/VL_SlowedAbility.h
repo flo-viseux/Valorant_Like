@@ -3,25 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "VL_Projectile.h"
-#include "VL_AbilityBase.generated.h"
+#include "VL_AbilityBase.h"
+#include "VL_SlowedAbility.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class VALORANT_LIKE_API UVL_AbilityBase : public UObject
+class VALORANT_LIKE_API UVL_SlowedAbility : public UVL_AbilityBase
 {
 	GENERATED_BODY()
-	
-public:
-	bool bIsBulletModifier;
 
 	virtual void Init();
-	virtual void Activate();
-	virtual void Deactivate();
 	virtual void Activate(float Value);
 	virtual void Deactivate(float Value);
-	virtual void ModifyProjectile(AVL_Projectile* Projectile);
 	virtual bool CanActivate() const;
 };

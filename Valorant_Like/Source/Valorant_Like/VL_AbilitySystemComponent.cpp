@@ -63,6 +63,16 @@ void UVL_AbilitySystemComponent::UseCompetenceC()
 	CompetenceCAbility->Activate();
 }
 
+void UVL_AbilitySystemComponent::Slowed(float Slow)
+{
+	CurrentSpeed -= Slow;
+}
+
+void UVL_AbilitySystemComponent::Hit(float Damage)
+{
+	CurrentHealth -= Damage;
+}
+
 void UVL_AbilitySystemComponent::ActivateAbility(FName AbilityName)
 {
 	for (UVL_AbilityBase* Ability : ActiveAbilities)
@@ -102,3 +112,21 @@ void UVL_AbilitySystemComponent::SetCurrentAmmoCount(int NewAmmoCount)
 	CurrentAmmoCount = NewAmmoCount;
 }
 
+int UVL_AbilitySystemComponent::GetCurrentSpeed() const
+{
+	return  CurrentSpeed;
+}
+
+void UVL_AbilitySystemComponent::SetCurrentSpeed(int NewSpeed)
+{
+	CurrentSpeed = NewSpeed;
+}
+
+int UVL_AbilitySystemComponent::GetCurrentHealth() const
+{
+	return  CurrentHealth;
+}
+
+void UVL_AbilitySystemComponent::SetCurrentHealth(int NewAmmoCount)
+{
+}
