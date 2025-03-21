@@ -31,9 +31,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile)
 	int32 BounceCount = 0;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
+	TSubclassOf<class AVL_SlowZone> SlowZoneClass;
+	
+	
+	UPROPERTY(EditDefaultsOnly, Category="Abilities")
+	TSubclassOf<UVL_SlowZoneAbility> SlowZoneAbilityClass;
 
 public:
 	AVL_Projectile();
+	
+	virtual void BeginPlay() override;
 
 	UFUNCTION()
 	void OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity);
@@ -52,4 +60,8 @@ public:
 	void SetMaxBoundCount(int MaxBounds);
 
 	bool bIsSlowProjectile = false;
+
+private:
+	UPROPERTY(VisibleAnywhere, Category="Attributes")
+	UVL_SlowZoneAbility* SlowZoneAbility;
 };

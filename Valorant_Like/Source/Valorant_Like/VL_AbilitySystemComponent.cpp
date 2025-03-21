@@ -6,6 +6,7 @@
 #include "VL_FireAbility.h"
 #include "VL_FPSCharacter.h"
 #include "VL_ReloadAbility.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values for this component's properties
 UVL_AbilitySystemComponent::UVL_AbilitySystemComponent()
@@ -112,12 +113,12 @@ void UVL_AbilitySystemComponent::SetCurrentAmmoCount(int NewAmmoCount)
 	CurrentAmmoCount = NewAmmoCount;
 }
 
-int UVL_AbilitySystemComponent::GetCurrentSpeed() const
+float UVL_AbilitySystemComponent::GetCurrentSpeed() const
 {
 	return  CurrentSpeed;
 }
 
-void UVL_AbilitySystemComponent::SetCurrentSpeed(int NewSpeed)
+void UVL_AbilitySystemComponent::SetCurrentSpeed(float NewSpeed)
 {
 	CurrentSpeed = NewSpeed;
 }
@@ -129,4 +130,105 @@ int UVL_AbilitySystemComponent::GetCurrentHealth() const
 
 void UVL_AbilitySystemComponent::SetCurrentHealth(int NewAmmoCount)
 {
+}
+
+void UVL_AbilitySystemComponent::InitBaseSpeed(float InBaseSpeed)
+{
+    BaseSpeed = InBaseSpeed;
+    CurrentSpeed = BaseSpeed;
+
+    GetWorld()->GetTimerManager().SetTimer(
+        SpeedModifierTimerHandle,
+        this,
+        &UVL_AbilitySystemComponent::CheckModifiersExpiration,
+        0.1f, // Check every 0.1 secondes
+        true
+    );
+}
+
+void UVL_AbilitySystemComponent::AddSpeedModifier(FName SourceID, float Multiplier, float Duration)
+{
+    bool bExists = false;
+    for (int32 i = 0; i < ActiveSpeedModifiers.Num(); i++)
+    {
+        if (ActiveSpeedModifiers[i].SourceID == SourceID)
+        {
+            ActiveSpeedModifiers[i].Multiplier = Multiplier;
+            ActiveSpeedModifiers[i].Duration = Duration;
+            ActiveSpeedModifiers[i].StartTime = GetWorld()->GetTimeSeconds();
+            bExists = true;
+            break;
+        }
+    }
+
+    if (!bExists)
+    {
+        FSpeedModifier NewModifier(SourceID, Multiplier, Duration);
+        NewModifier.StartTime = GetWorld()->GetTimeSeconds();
+        ActiveSpeedModifiers.Add(NewModifier);
+    }
+
+    RecalculateSpeed();
+}
+
+void UVL_AbilitySystemComponent::RemoveSpeedModifier(FName SourceID)
+{
+    bool bRemoved = false;
+    for (int32 i = ActiveSpeedModifiers.Num() - 1; i >= 0; i--)
+    {
+        if (ActiveSpeedModifiers[i].SourceID == SourceID)
+        {
+            ActiveSpeedModifiers.RemoveAt(i);
+            bRemoved = true;
+            break;
+        }
+    }
+
+    if (bRemoved)
+        RecalculateSpeed();
+}
+
+void UVL_AbilitySystemComponent::RecalculateSpeed()
+{
+    float FinalMultiplier = 1.0f;
+    for (const FSpeedModifier& Modifier : ActiveSpeedModifiers)
+    {
+        FinalMultiplier *= Modifier.Multiplier;
+    }
+    
+    CurrentSpeed = BaseSpeed * FinalMultiplier;
+    
+    AVL_FPSCharacter* OwnerCharacter = Cast<AVL_FPSCharacter>(GetOwner());
+    if (OwnerCharacter)
+    {
+        OwnerCharacter->GetCharacterMovement()->MaxWalkSpeed = CurrentSpeed;
+    }
+}
+
+void UVL_AbilitySystemComponent::CheckModifiersExpiration()
+{
+    float CurrentTime = GetWorld()->GetTimeSeconds();
+    bool bNeedRecalculation = false;
+
+    for (int32 i = ActiveSpeedModifiers.Num() - 1; i >= 0; i--)
+    {
+        if (ActiveSpeedModifiers[i].Duration > 0.0f &&
+            (CurrentTime - ActiveSpeedModifiers[i].StartTime) >= ActiveSpeedModifiers[i].Duration)
+        {
+            ActiveSpeedModifiers.RemoveAt(i);
+            bNeedRecalculation = true;
+        }
+    }
+
+    if (bNeedRecalculation)
+        RecalculateSpeed();
+}
+
+void UVL_AbilitySystemComponent::ClearAllSpeedModifiers()
+{
+    if (ActiveSpeedModifiers.Num() > 0)
+    {
+        ActiveSpeedModifiers.Empty();
+        RecalculateSpeed();
+    }
 }

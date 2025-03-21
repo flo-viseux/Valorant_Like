@@ -3,6 +3,8 @@
 
 #include "VL_Projectile.h"
 
+#include "VL_SlowZone.h"
+#include "VL_SlowZoneAbility.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -39,6 +41,16 @@ AVL_Projectile::AVL_Projectile()
 	InitialLifeSpan = 3.0f;
 }
 
+void AVL_Projectile::BeginPlay()
+{
+	if (SlowZoneAbilityClass)
+	{
+		SlowZoneAbility = NewObject<UVL_SlowZoneAbility>(this, SlowZoneAbilityClass);
+		SlowZoneAbility->Init();
+		SlowZoneAbility->SlowZoneClass = SlowZoneClass;
+	}
+}
+
 void AVL_Projectile::OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity)
 {
 	if (ImpactResult.ImpactNormal.Z > 0.7f || !bIsSlowProjectile)  // 0.7  = cos(45°) -> plane surface
@@ -47,7 +59,7 @@ void AVL_Projectile::OnBounce(const FHitResult& ImpactResult, const FVector& Imp
 
 		if (bIsSlowProjectile)
 		{
-			// TODO create slow area
+			SlowZoneAbility->Activate(ImpactResult.Location);
 		}
 	}
     

@@ -9,6 +9,41 @@
 #include "Components/ActorComponent.h"
 #include "VL_AbilitySystemComponent.generated.h"
 
+USTRUCT(BlueprintType)
+struct FSpeedModifier
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName SourceID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Multiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Duration;
+
+	UPROPERTY()
+	float StartTime;
+
+	FSpeedModifier()
+		: SourceID(NAME_None)
+		, Multiplier(1.0f)
+		, Duration(-1.0f)
+		, StartTime(0.0f)
+	{
+	}
+
+	FSpeedModifier(FName InSourceID, float InMultiplier, float InDuration = -1.0f)
+		: SourceID(InSourceID)
+		, Multiplier(InMultiplier)
+		, Duration(InDuration)
+		, StartTime(0.0f)
+	{
+	}
+};
+
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class VALORANT_LIKE_API UVL_AbilitySystemComponent : public UActorComponent
@@ -48,16 +83,44 @@ public:
 	int GetCurrentAmmoCount() const;
 
 	void SetCurrentAmmoCount(int NewAmmoCount);
-	
-	int GetCurrentSpeed() const;
-
-	void SetCurrentSpeed(int NewAmmoCount);
 
 	int GetCurrentHealth() const;
 
 	void SetCurrentHealth(int NewAmmoCount);
 
+	float GetCurrentSpeed() const;
+
+	void SetCurrentSpeed(float NewSpeed);
+
+	UFUNCTION(BlueprintCallable, Category = "Character|Movement")
+	void InitBaseSpeed(float InBaseSpeed);
+
+	UFUNCTION(BlueprintCallable, Category = "Character|Movement")
+	void AddSpeedModifier(FName SourceID, float Multiplier, float Duration = -1.0f);
+
+	UFUNCTION(BlueprintCallable, Category = "Character|Movement")
+	void RemoveSpeedModifier(FName SourceID);
+
+	UFUNCTION(BlueprintCallable, Category = "Character|Movement")
+	void RecalculateSpeed();
+
+	UFUNCTION()
+	void CheckModifiersExpiration();
+
+	UFUNCTION(BlueprintCallable, Category = "Character|Movement")
+	void ClearAllSpeedModifiers();
+
 protected:
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
+	TSubclassOf<class AVL_Projectile> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
+	float InitialHealth;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
+	float BaseSpeed;
+	
+private:
 	UPROPERTY()
 	TArray<UVL_AbilityBase*> ActiveAbilities;
 	
@@ -73,16 +136,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Attributes")
 	UVL_AbilityBase* CompetenceCAbility;
 	
-	UPROPERTY(EditDefaultsOnly, Category="Attributes")
-	TSubclassOf<class AVL_Projectile> ProjectileClass;
+	UPROPERTY()
+	TArray<FSpeedModifier> ActiveSpeedModifiers;
 
-	
-	UPROPERTY(EditDefaultsOnly, Category="Attributes")
-	float InitialHealth;
+	UPROPERTY()
+	float CurrentSpeed;
+
+	FTimerHandle SpeedModifierTimerHandle;
 
 	int CurrentAmmoCount = 0;
-	
-	float CurrentSpeed = 0;
 
 	float CurrentHealth = 0;
 };

@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "VL_ReloadAbility.h"
+#include "VL_SlowZone.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -26,7 +27,6 @@ UVL_AbilitySystemComponent* AVL_FPSCharacter::GetAbilitySystemComponent() const
 void AVL_FPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	AbilitySystemComponent->SetCurrentSpeed(GetCharacterMovement()->MaxWalkSpeed);
 }
 
 // Called to bind functionality to input
@@ -65,18 +65,34 @@ void AVL_FPSCharacter::UseCompentenceC()
 
 void AVL_FPSCharacter::Hit(float Damage)
 {
-	AbilitySystemComponent->UseCompetenceC();
-}
-
-void AVL_FPSCharacter::Slowed(float Slow)
-{
-	AbilitySystemComponent->UseCompetenceC();
+	AbilitySystemComponent->Hit(Damage);
 }
 
 void AVL_FPSCharacter::Move(const FInputActionValue& Value)
 {
-	GetCharacterMovement()->MaxWalkSpeed = AbilitySystemComponent->GetCurrentSpeed();
-	
 	Super::Move(Value);
+}
+
+
+void AVL_FPSCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	AVL_SlowZone* SlowZone = Cast<AVL_SlowZone>(OtherActor);
+	if (SlowZone)
+	{
+		FName SlowZoneID = FName(*FString::Printf(TEXT("SlowZone_%s"), *GetName()));
+		GetAbilitySystemComponent()->AddSpeedModifier(SlowZoneID, SlowZone->SlowAmount);
+	}
+}
+
+void AVL_FPSCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	AVL_SlowZone* SlowZone = Cast<AVL_SlowZone>(OtherActor);
+	if (SlowZone)
+	{
+		FName SlowZoneID = FName(*FString::Printf(TEXT("SlowZone_%s"), *GetName()));
+		GetAbilitySystemComponent()->RemoveSpeedModifier(SlowZoneID);
+	}
 }
 

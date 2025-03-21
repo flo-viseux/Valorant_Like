@@ -19,8 +19,6 @@ public:
 	virtual bool CanActivate() const override;
 
 	TSubclassOf<class AVL_Projectile> ProjectileClass;
-
-protected:
 	
 	float Damage = 20.0f;
 };

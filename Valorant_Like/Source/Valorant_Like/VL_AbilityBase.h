@@ -20,6 +20,7 @@ public:
 	virtual void Init();
 	virtual void Activate();
 	virtual void Deactivate();
+	virtual void Activate(FVector Location);
 	virtual void Activate(float Value);
 	virtual void Deactivate(float Value);
 	virtual void ModifyProjectile(AVL_Projectile* Projectile);
