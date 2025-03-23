@@ -28,7 +28,7 @@ AVL_SlowZone::AVL_SlowZone()
 	}
 
 	// Adjust the cylinder to be flat
-	CylinderMesh->SetRelativeScale3D(FVector(1.0f, 1.0f, 0.1f));
+	CylinderMesh->SetRelativeScale3D(FVector(1.0f, .1f, 0.1f));
 	
 	// Create the collision component
 	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionComponent"));
@@ -42,11 +42,11 @@ AVL_SlowZone::AVL_SlowZone()
 	EffectComponent->SetupAttachment(RootComponent);
 	
 	// Default properties
-	SlowAmount = 0.5f; // 50% slow
-	ZoneDuration = 5.0f; // 5 seconds before shrinking
-	GrowDuration = 1.0f; // 1 second to grow
-	ShrinkDuration = 1.0f; // 1 second to shrink
-	MaxScale = 5.0f; // Maximum scale
+	SlowAmount = 0.1f; // 50% slow
+	ZoneDuration = 5.0f;
+	GrowDuration = 1.0f; 
+	ShrinkDuration = 1.0f;
+	MaxScale = 5.0f;
 	
 	// Set initial state
 	CurrentState = EZoneState::Growing;
@@ -57,13 +57,12 @@ AVL_SlowZone::AVL_SlowZone()
 void AVL_SlowZone::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	// Set initial scale to 0
-	SetActorScale3D(FVector(0.0f, 0.0f, 0.0f));
-	
-	// Bind overlap events
+
 	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AVL_SlowZone::OnOverlapBegin);
 	CollisionComponent->OnComponentEndOverlap.AddDynamic(this, &AVL_SlowZone::OnOverlapEnd);
+	
+	// Set initial scale to 0
+	SetActorScale3D(FVector(1.0f, 1.0f, 0.01f));
 	
 	// Set material if provided
 	if (ZoneMaterial)
@@ -80,19 +79,16 @@ void AVL_SlowZone::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Update elapsed time
 	ElapsedTime += DeltaTime;
 	
-	// Handle different states
 	if (CurrentState == EZoneState::Growing)
 	{
-		// Calculate scale factor based on elapsed time
 		float ScaleFactor = FMath::Min(ElapsedTime / GrowDuration, 1.0f) * MaxScale;
 		
-		// Apply scale to X and Y (radius), maintain Z scale to keep it flat
-		SetActorScale3D(FVector(ScaleFactor, ScaleFactor, ScaleFactor));
+		SetActorScale3D(FVector(ScaleFactor, ScaleFactor, 0.01f));
+		CollisionComponent->SetCapsuleRadius(10.0f * ScaleFactor);
+		CollisionComponent->SetCapsuleHalfHeight(5000.0f * ScaleFactor);
 		
-		// If growth completed, transition to active state
 		if (ElapsedTime >= GrowDuration)
 		{
 			CurrentState = EZoneState::Active;
@@ -101,13 +97,12 @@ void AVL_SlowZone::Tick(float DeltaTime)
 	}
 	else if (CurrentState == EZoneState::Shrinking)
 	{
-		// Calculate scale factor based on elapsed time
 		float ScaleFactor = FMath::Max(1.0f - (ElapsedTime / ShrinkDuration), 0.0f) * MaxScale;
 		
-		// Apply scale to X and Y (radius), maintain Z scale to keep it flat
-		SetActorScale3D(FVector(ScaleFactor, ScaleFactor, ScaleFactor));
+		SetActorScale3D(FVector(ScaleFactor, ScaleFactor, 0.01f));
+		CollisionComponent->SetCapsuleRadius(10.0f * ScaleFactor);
+		CollisionComponent->SetCapsuleHalfHeight(5000.0f * ScaleFactor);
 		
-		// If shrinking completed, destroy the actor
 		if (ElapsedTime >= ShrinkDuration)
 		{
 			Destroy();
@@ -117,7 +112,30 @@ void AVL_SlowZone::Tick(float DeltaTime)
 
 void AVL_SlowZone::StartShrinking()
 {
-	// Reset timer and set state to shrinking
 	CurrentState = EZoneState::Shrinking;
 	ElapsedTime = 0.0f;
+}
+
+void AVL_SlowZone::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	AVL_FPSCharacter* Character = Cast<AVL_FPSCharacter>(OtherActor);
+	if (Character && Character->GetAbilitySystemComponent())
+	{
+		FName SlowZoneID = FName(*FString::Printf(TEXT("SlowZone_%s"), *GetName()));
+        
+		Character->GetAbilitySystemComponent()->AddSpeedModifier(SlowZoneID, SlowAmount);
+	}
+}
+
+void AVL_SlowZone::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	AVL_FPSCharacter* Character = Cast<AVL_FPSCharacter>(OtherActor);
+	if (Character && Character->GetAbilitySystemComponent())
+	{
+		FName SlowZoneID = FName(*FString::Printf(TEXT("SlowZone_%s"), *GetName()));
+        
+		Character->GetAbilitySystemComponent()->RemoveSpeedModifier(SlowZoneID);
+	}
 }

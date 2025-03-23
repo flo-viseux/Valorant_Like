@@ -29,6 +29,8 @@ void UVL_AbilitySystemComponent::BeginPlay()
 	Cast<UVL_FireAbility>(FireAbility)->ProjectileClass = ProjectileClass;
 
 	CurrentAmmoCount = ReloadAbility->GetMaxAmmoCount();
+	
+	InitBaseSpeed(500.0f);
 }
 
 void UVL_AbilitySystemComponent::Fire()
@@ -144,6 +146,8 @@ void UVL_AbilitySystemComponent::InitBaseSpeed(float InBaseSpeed)
         0.1f, // Check every 0.1 secondes
         true
     );
+
+	RecalculateSpeed();
 }
 
 void UVL_AbilitySystemComponent::AddSpeedModifier(FName SourceID, float Multiplier, float Duration)

@@ -16,7 +16,7 @@ void UVL_AbilityBase::Deactivate()
 {
 }
 
-void UVL_AbilityBase::Activate(FVector Location)
+void UVL_AbilityBase::Activate(FVector Location, UWorld* World)
 {
 }
 

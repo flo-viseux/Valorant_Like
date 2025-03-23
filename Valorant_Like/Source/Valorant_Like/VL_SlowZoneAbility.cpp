@@ -5,14 +5,16 @@
 
 #include "VL_SlowZone.h"
 
-void UVL_SlowZoneAbility::Activate(FVector Location)
+void UVL_SlowZoneAbility::Activate(FVector Location, UWorld* World)
 {
-	const FRotator SpawnRotation = FRotator(0, 0, 0);
-	const FVector SpawnLocation = Location;
-	
-	//Set Spawn Collision Handling Override
-	FActorSpawnParameters ActorSpawnParams;
-	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		
-	AVL_SlowZone* SpawnedSlowZone = GetWorld()->SpawnActor<AVL_SlowZone>(SlowZoneClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+	if (World && SlowZoneClass)
+	{
+		const FRotator SpawnRotation = FRotator(0, 0, 0);
+		const FVector SpawnLocation = Location;
+        
+		FActorSpawnParameters ActorSpawnParams;
+		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+            
+		AVL_SlowZone* SpawnedSlowZone = World->SpawnActor<AVL_SlowZone>(SlowZoneClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+	}
 }

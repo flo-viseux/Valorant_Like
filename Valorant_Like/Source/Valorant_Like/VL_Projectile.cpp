@@ -2,12 +2,9 @@
 
 
 #include "VL_Projectile.h"
-
-#include "VL_SlowZone.h"
 #include "VL_SlowZoneAbility.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AVL_Projectile::AVL_Projectile()
@@ -43,6 +40,8 @@ AVL_Projectile::AVL_Projectile()
 
 void AVL_Projectile::BeginPlay()
 {
+    Super::BeginPlay();
+	
 	if (SlowZoneAbilityClass)
 	{
 		SlowZoneAbility = NewObject<UVL_SlowZoneAbility>(this, SlowZoneAbilityClass);
@@ -57,9 +56,10 @@ void AVL_Projectile::OnBounce(const FHitResult& ImpactResult, const FVector& Imp
 	{
 		BounceCount++;
 
-		if (bIsSlowProjectile)
+		if (bIsSlowProjectile && SlowZoneAbility)
 		{
-			SlowZoneAbility->Activate(ImpactResult.Location);
+			SlowZoneAbility->SlowZoneClass = SlowZoneClass;
+			SlowZoneAbility->Activate(ImpactResult.Location, GetWorld());
 		}
 	}
     

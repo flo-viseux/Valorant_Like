@@ -73,26 +73,3 @@ void AVL_FPSCharacter::Move(const FInputActionValue& Value)
 	Super::Move(Value);
 }
 
-
-void AVL_FPSCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	AVL_SlowZone* SlowZone = Cast<AVL_SlowZone>(OtherActor);
-	if (SlowZone)
-	{
-		FName SlowZoneID = FName(*FString::Printf(TEXT("SlowZone_%s"), *GetName()));
-		GetAbilitySystemComponent()->AddSpeedModifier(SlowZoneID, SlowZone->SlowAmount);
-	}
-}
-
-void AVL_FPSCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, 
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	AVL_SlowZone* SlowZone = Cast<AVL_SlowZone>(OtherActor);
-	if (SlowZone)
-	{
-		FName SlowZoneID = FName(*FString::Printf(TEXT("SlowZone_%s"), *GetName()));
-		GetAbilitySystemComponent()->RemoveSpeedModifier(SlowZoneID);
-	}
-}
-

@@ -34,9 +34,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
 	TSubclassOf<class AVL_SlowZone> SlowZoneClass;
 	
-	
-	UPROPERTY(EditDefaultsOnly, Category="Abilities")
-	TSubclassOf<UVL_SlowZoneAbility> SlowZoneAbilityClass;
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class UVL_SlowZoneAbility> SlowZoneAbilityClass;
 
 public:
 	AVL_Projectile();
