@@ -40,6 +40,7 @@ void UVL_AbilitySystemComponent::Fire()
 	
 	FireAbility->Activate();
 	CurrentAmmoCount--;
+    OnAmmoChanged.Broadcast(CurrentAmmoCount);
 }
 
 void UVL_AbilitySystemComponent::Reload()
@@ -113,6 +114,7 @@ int UVL_AbilitySystemComponent::GetCurrentAmmoCount() const
 void UVL_AbilitySystemComponent::SetCurrentAmmoCount(int NewAmmoCount)
 {
 	CurrentAmmoCount = NewAmmoCount;
+    OnAmmoChanged.Broadcast(CurrentAmmoCount);
 }
 
 float UVL_AbilitySystemComponent::GetCurrentSpeed() const

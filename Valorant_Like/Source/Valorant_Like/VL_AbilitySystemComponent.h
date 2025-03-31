@@ -43,7 +43,9 @@ struct FSpeedModifier
 	}
 };
 
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAmmoChanged, int32, CurrentAmmo);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAbilityCooldownChanged, FName, AbilityName, float, RemainingCooldown);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAbilityActiveStateChanged, FName, AbilityName, bool, bIsActive);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class VALORANT_LIKE_API UVL_AbilitySystemComponent : public UActorComponent
@@ -51,10 +53,20 @@ class VALORANT_LIKE_API UVL_AbilitySystemComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
 	UVL_AbilitySystemComponent();
 
 	virtual void BeginPlay() override;
+
+	// Delegates
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnAmmoChanged OnAmmoChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnAbilityCooldownChanged OnAbilityCooldownChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnAbilityActiveStateChanged OnAbilityActiveStateChanged;
+	
 
 	void Fire();
 	void Reload();

@@ -18,12 +18,13 @@ public:
 	virtual void ModifyProjectile(AVL_Projectile* Projectile) override;
 
 	virtual bool CanActivate() const override;
+	
+    virtual void Deactivate() override;
 
 	virtual void Activate() override;
 
 	virtual void Init() override;
 
 protected:
-
-	bool bAlreadyUsed = false;
+    bool bIsActive;
 };

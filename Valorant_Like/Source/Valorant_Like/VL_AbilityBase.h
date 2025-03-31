@@ -16,6 +16,10 @@ class VALORANT_LIKE_API UVL_AbilityBase : public UObject
 	
 public:
 	bool bIsBulletModifier;
+	bool bIsOnCooldown;
+	float CooldownDuration;
+	FTimerHandle CooldownTimerHandle;
+	FTimerHandle CooldownUpdateTimerHandle;
 
 	virtual void Init();
 	virtual void Activate();
@@ -25,4 +29,10 @@ public:
 	virtual void Deactivate(float Value);
 	virtual void ModifyProjectile(AVL_Projectile* Projectile);
 	virtual bool CanActivate() const;
+
+	void StartCooldown();
+	void EndCooldown();
+	void UpdateCooldownUI();
+	float GetRemainingCooldown() const;
+	bool IsOnCooldown() const;
 };
