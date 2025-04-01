@@ -16,6 +16,7 @@ class VALORANT_LIKE_API UVL_SlowZoneAbility : public UVL_AbilityBase
 
 public:
 	virtual void Activate(FVector Location, UWorld* World) override;
-
+	
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
 	TSubclassOf<class AVL_SlowZone> SlowZoneClass;
 };

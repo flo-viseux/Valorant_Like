@@ -8,7 +8,7 @@
 #include "GameFramework/Character.h"
 #include "VL_FPSCharacter.generated.h"
 
-UCLASS()
+UCLASS(Blueprintable)
 class VALORANT_LIKE_API AVL_FPSCharacter : public AValorant_LikeCharacter
 {
 	GENERATED_BODY()

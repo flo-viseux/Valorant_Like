@@ -12,6 +12,11 @@ void UVL_AbilityBase::Init()
 	CooldownDuration = 0.0f;
 }
 
+void UVL_AbilityBase::Init(FName InCompetenceName)
+{
+	CompetenceName = InCompetenceName;
+}
+
 void UVL_AbilityBase::Activate()
 {
 }
@@ -62,9 +67,11 @@ void UVL_AbilityBase::StartCooldown()
 		World->GetTimerManager().SetTimer(
 			CooldownUpdateTimerHandle,
 			FTimerDelegate::CreateUObject(this, &UVL_AbilityBase::UpdateCooldownUI),
-			0.1f, // Update every 0.1 secondes
+			1.0f,
 			true
 		);
+
+		UpdateCooldownUI();
 	}
 }
 
@@ -72,19 +79,19 @@ void UVL_AbilityBase::EndCooldown()
 {bIsOnCooldown = false;
     
 	UVL_AbilitySystemComponent* AbilitySystem = Cast<UVL_AbilitySystemComponent>(GetOuter());
-	if (AbilitySystem)
+	if (AbilitySystem && CompetenceName != "")
 	{
-		AbilitySystem->OnAbilityCooldownChanged.Broadcast(GetFName(), 0.0f);
+		AbilitySystem->OnAbilityCooldownChanged.Broadcast(CompetenceName, 0.0f);
 	}
 }
 
 void UVL_AbilityBase::UpdateCooldownUI()
 {
 	UVL_AbilitySystemComponent* AbilitySystem = Cast<UVL_AbilitySystemComponent>(GetOuter());
-	if (AbilitySystem)
+	if (AbilitySystem && CompetenceName != "")
 	{
 		float RemainingTime = GetRemainingCooldown();
-		AbilitySystem->OnAbilityCooldownChanged.Broadcast(GetFName(), RemainingTime);
+		AbilitySystem->OnAbilityCooldownChanged.Broadcast(CompetenceName, RemainingTime);
         
 		// Stop update UI, cooldown is finished
 		if (RemainingTime <= 0.0f)

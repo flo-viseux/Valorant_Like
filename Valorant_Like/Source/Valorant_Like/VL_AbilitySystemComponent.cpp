@@ -23,12 +23,12 @@ void UVL_AbilitySystemComponent::BeginPlay()
 	FireAbility = NewObject<UVL_FireAbility>(this, FireAbilityClass);
 	FireAbility->Init();
 	CompetenceCAbility = NewObject<UVL_AbilityBase>(this, CompetenceCAbilityClass);
-	CompetenceCAbility->Init();
+	CompetenceCAbility->Init("CompetenceC");
 	CompetenceXAbility = NewObject<UVL_AbilityBase>(this, CompetenceXAbilityClass);
-	CompetenceXAbility->Init();
-	Cast<UVL_FireAbility>(FireAbility)->ProjectileClass = ProjectileClass;
+	CompetenceXAbility->Init("CompetenceX");
 
-	CurrentAmmoCount = ReloadAbility->GetMaxAmmoCount();
+	MaxAmmoCount = ReloadAbility->GetMaxAmmoCount();
+	CurrentAmmoCount = MaxAmmoCount;
 	
 	InitBaseSpeed(500.0f);
 }
@@ -40,7 +40,7 @@ void UVL_AbilitySystemComponent::Fire()
 	
 	FireAbility->Activate();
 	CurrentAmmoCount--;
-    OnAmmoChanged.Broadcast(CurrentAmmoCount);
+    	OnAmmoChanged.Broadcast(CurrentAmmoCount, MaxAmmoCount);
 }
 
 void UVL_AbilitySystemComponent::Reload()
@@ -114,7 +114,7 @@ int UVL_AbilitySystemComponent::GetCurrentAmmoCount() const
 void UVL_AbilitySystemComponent::SetCurrentAmmoCount(int NewAmmoCount)
 {
 	CurrentAmmoCount = NewAmmoCount;
-    OnAmmoChanged.Broadcast(CurrentAmmoCount);
+    	OnAmmoChanged.Broadcast(CurrentAmmoCount, MaxAmmoCount);
 }
 
 float UVL_AbilitySystemComponent::GetCurrentSpeed() const

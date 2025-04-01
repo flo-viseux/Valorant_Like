@@ -43,7 +43,7 @@ struct FSpeedModifier
 	}
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAmmoChanged, int32, CurrentAmmo);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAmmoChanged, int32, CurrentAmmo, int32, MaxAmmo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAbilityCooldownChanged, FName, AbilityName, float, RemainingCooldown);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAbilityActiveStateChanged, FName, AbilityName, bool, bIsActive);
 
@@ -84,9 +84,9 @@ public:
 
 	
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
-	TSubclassOf<UVL_AbilityBase> ReloadAbilityClass;
+	TSubclassOf<UVL_ReloadAbility> ReloadAbilityClass;
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
-	TSubclassOf<UVL_AbilityBase> FireAbilityClass;
+	TSubclassOf<UVL_FireAbility> FireAbilityClass;
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
 	TSubclassOf<UVL_AbilityBase> CompetenceXAbilityClass;
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
@@ -124,9 +124,6 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Attributes")
-	TSubclassOf<class AVL_Projectile> ProjectileClass;
-
-	UPROPERTY(EditDefaultsOnly, Category="Attributes")
 	float InitialHealth;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Attributes")
@@ -156,7 +153,8 @@ private:
 
 	FTimerHandle SpeedModifierTimerHandle;
 
-	int CurrentAmmoCount = 0;
+	int CurrentAmmoCount = 0;	
+	int MaxAmmoCount = 0;
 
 	float CurrentHealth = 0;
 };

@@ -46,7 +46,6 @@ void AVL_Projectile::BeginPlay()
 	{
 		SlowZoneAbility = NewObject<UVL_SlowZoneAbility>(this, SlowZoneAbilityClass);
 		SlowZoneAbility->Init();
-		SlowZoneAbility->SlowZoneClass = SlowZoneClass;
 	}
 }
 
@@ -57,10 +56,7 @@ void AVL_Projectile::OnBounce(const FHitResult& ImpactResult, const FVector& Imp
 		BounceCount++;
 
 		if (bIsSlowProjectile && SlowZoneAbility)
-		{
-			SlowZoneAbility->SlowZoneClass = SlowZoneClass;
 			SlowZoneAbility->Activate(ImpactResult.Location, GetWorld());
-		}
 	}
     
 	if (BounceCount > MaxBounces)

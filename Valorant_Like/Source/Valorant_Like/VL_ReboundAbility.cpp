@@ -15,6 +15,9 @@ void UVL_ReboundAbility::ModifyProjectile(AVL_Projectile* Projectile)
 	Projectile->GetProjectileMovement()->Bounciness = .5f;
 	Projectile->GetProjectileMovement()->Friction = 0.0f;
 	Projectile->SetMaxBoundCount(ReboundCount);
+
+	Deactivate();
+    	StartCooldown();
 }
 
 bool UVL_ReboundAbility::CanActivate() const
@@ -22,15 +25,40 @@ bool UVL_ReboundAbility::CanActivate() const
 	return Super::CanActivate();
 }
 
-void UVL_ReboundAbility::Activate()
+void UVL_ReboundAbility::Deactivate()
 {
 	UVL_AbilitySystemComponent* CharacterASC = Cast<UVL_AbilitySystemComponent>(GetOuter());
 	if (!CharacterASC) return;
 
-	CharacterASC->AddActiveAbility(this);
+	CharacterASC->RemoveActiveAbility(this);
+    	bIsActive = false;
+    	CharacterASC->OnAbilityActiveStateChanged.Broadcast(CompetenceName, false);
 }
 
-void UVL_ReboundAbility::Init()
+void UVL_ReboundAbility::Activate()
 {
+	if (bIsActive)
+	{
+		Deactivate();
+		return;
+	}
+	
+	if (bIsOnCooldown)
+		return;
+	
+	UVL_AbilitySystemComponent* CharacterASC = Cast<UVL_AbilitySystemComponent>(GetOuter());
+	if (!CharacterASC) return;
+
+	CharacterASC->AddActiveAbility(this);
+    	bIsActive = true;
+    	CharacterASC->OnAbilityActiveStateChanged.Broadcast(CompetenceName, true);
+
+}
+
+void UVL_ReboundAbility::Init(FName InCompetenceName)
+{	
+	Super::Init(InCompetenceName);
+	bIsOnCooldown = false;
 	bIsBulletModifier = true;
+	bIsActive = false;
 }

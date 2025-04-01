@@ -31,9 +31,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile)
 	int32 BounceCount = 0;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Projectile)
-	TSubclassOf<class AVL_SlowZone> SlowZoneClass;
-	
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class UVL_SlowZoneAbility> SlowZoneAbilityClass;
 

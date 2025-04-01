@@ -16,9 +16,10 @@ void UVL_SlowAbility::ModifyProjectile(AVL_Projectile* Projectile)
 	Projectile->GetProjectileMovement()->MaxSpeed = 3000.f;
 	Projectile->GetProjectileMovement()->ProjectileGravityScale = 3.0f;
 	Projectile->bIsSlowProjectile = true;
-	
-    StartCooldown();
-    Deactivate();
+	    
+	Deactivate();
+    	StartCooldown();
+
 }
 
 bool UVL_SlowAbility::CanActivate() const
@@ -33,7 +34,7 @@ void UVL_SlowAbility::Deactivate()
 
 	CharacterASC->RemoveActiveAbility(this);
     bIsActive = false;
-    CharacterASC->OnAbilityActiveStateChanged.Broadcast(GetFName(), false);
+    CharacterASC->OnAbilityActiveStateChanged.Broadcast(CompetenceName, false);
 }
 
 void UVL_SlowAbility::Activate()
@@ -52,13 +53,13 @@ void UVL_SlowAbility::Activate()
 
 	CharacterASC->AddActiveAbility(this);
     bIsActive = true;
-    CharacterASC->OnAbilityActiveStateChanged.Broadcast(GetFName(), true);
+    CharacterASC->OnAbilityActiveStateChanged.Broadcast(CompetenceName, true);
 }
 
-void UVL_SlowAbility::Init()
+void UVL_SlowAbility::Init(FName InCompetenceName)
 {
-	Super::Init();
+	Super::Init(InCompetenceName);
+	bIsOnCooldown = false;
 	bIsBulletModifier = true;
-	CooldownDuration = 5.0f;
 	bIsActive = false;
 }

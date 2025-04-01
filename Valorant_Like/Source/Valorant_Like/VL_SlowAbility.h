@@ -23,7 +23,7 @@ public:
 
 	virtual void Activate() override;
 
-	virtual void Init() override;
+	virtual void Init(FName InCompetenceName = "") override;
 
 protected:
     bool bIsActive;

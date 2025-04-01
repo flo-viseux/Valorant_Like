@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class VALORANT_LIKE_API UVL_AbilityBase : public UObject
 {
 	GENERATED_BODY()
@@ -17,11 +17,15 @@ class VALORANT_LIKE_API UVL_AbilityBase : public UObject
 public:
 	bool bIsBulletModifier;
 	bool bIsOnCooldown;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
 	float CooldownDuration;
+
 	FTimerHandle CooldownTimerHandle;
 	FTimerHandle CooldownUpdateTimerHandle;
 
 	virtual void Init();
+	virtual void Init(FName InCompetenceName);
 	virtual void Activate();
 	virtual void Deactivate();
 	virtual void Activate(FVector Location, UWorld* World);
@@ -35,4 +39,5 @@ public:
 	void UpdateCooldownUI();
 	float GetRemainingCooldown() const;
 	bool IsOnCooldown() const;
+	FName CompetenceName;
 };

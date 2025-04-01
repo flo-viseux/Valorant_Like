@@ -18,7 +18,9 @@ public:
 
 	virtual bool CanActivate() const override;
 
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
 	TSubclassOf<class AVL_Projectile> ProjectileClass;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
 	float Damage = 20.0f;
 };

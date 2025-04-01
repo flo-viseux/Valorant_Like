@@ -18,14 +18,16 @@ public:
 	virtual void ModifyProjectile(AVL_Projectile* Projectile) override;
 
 	virtual bool CanActivate() const override;
+	
+    	virtual void Deactivate() override;
 
 	virtual void Activate() override;
 
-	virtual void Init() override;
+	virtual void Init(FName InCompetenceName = "") override;
 
 protected:
-	
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
 	int ReboundCount = 3;
 
-	bool bAlreadyUsed = false;
+    	bool bIsActive;
 };
