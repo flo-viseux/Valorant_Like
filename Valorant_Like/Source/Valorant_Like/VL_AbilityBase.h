@@ -20,6 +20,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Attributes")
 	float CooldownDuration;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
+	UTexture2D* CompetenceIcon;
 
 	FTimerHandle CooldownTimerHandle;
 	FTimerHandle CooldownUpdateTimerHandle;

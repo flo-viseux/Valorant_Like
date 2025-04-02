@@ -23,4 +23,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Attributes")
 	float Damage = 20.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
+	USoundBase* FireSound;
+
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
+	UAnimMontage* FireAnimation;
 };

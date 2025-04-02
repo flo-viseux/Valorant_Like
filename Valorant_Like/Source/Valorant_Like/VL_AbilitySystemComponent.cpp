@@ -5,6 +5,7 @@
 
 #include "VL_FireAbility.h"
 #include "VL_FPSCharacter.h"
+#include "VL_HitAbility.h"
 #include "VL_ReloadAbility.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -26,11 +27,19 @@ void UVL_AbilitySystemComponent::BeginPlay()
 	CompetenceCAbility->Init("CompetenceC");
 	CompetenceXAbility = NewObject<UVL_AbilityBase>(this, CompetenceXAbilityClass);
 	CompetenceXAbility->Init("CompetenceX");
+	HitAbility = NewObject<UVL_HitAbility>(this, HitAbilityClass);
+	HitAbility->Init();
 
 	MaxAmmoCount = ReloadAbility->GetMaxAmmoCount();
 	CurrentAmmoCount = MaxAmmoCount;
 	
 	InitBaseSpeed(500.0f);
+}
+
+void UVL_AbilitySystemComponent::InitIcons()
+{
+	OnAbilityIconInit.Broadcast("CompetenceC", CompetenceCAbility->CompetenceIcon);
+	OnAbilityIconInit.Broadcast("CompetenceX", CompetenceXAbility->CompetenceIcon);
 }
 
 void UVL_AbilitySystemComponent::Fire()
@@ -67,14 +76,9 @@ void UVL_AbilitySystemComponent::UseCompetenceC()
 	CompetenceCAbility->Activate();
 }
 
-void UVL_AbilitySystemComponent::Slowed(float Slow)
-{
-	CurrentSpeed -= Slow;
-}
-
 void UVL_AbilitySystemComponent::Hit(float Damage)
 {
-	CurrentHealth -= Damage;
+	HitAbility->Activate(Damage);
 }
 
 void UVL_AbilitySystemComponent::ActivateAbility(FName AbilityName)

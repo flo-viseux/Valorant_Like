@@ -3,6 +3,8 @@
 
 #include "VL_FireAbility.h"
 #include "VL_FPSCharacter.h"
+#include "VL_SlowAbility.h"
+#include "Kismet/GameplayStatics.h"
 
 void UVL_FireAbility::Activate()
 {
@@ -28,13 +30,33 @@ void UVL_FireAbility::Activate()
 
 		if (SpawnedProjectile)
 		{
+			if (FireAnimation != nullptr)
+			{
+				UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
+				if (AnimInstance != nullptr)
+				{
+					AnimInstance->Montage_Play(FireAnimation);
+				}
+			}
+
+			UVL_SlowAbility* SlowAbility = nullptr;
+			
 			for (UVL_AbilityBase* Ability : CharacterASC->GetActiveAbilities())
 			{
 				if (Ability->bIsBulletModifier)
 					Ability->ModifyProjectile(SpawnedProjectile);
 
+				UVL_SlowAbility* slow = Cast<UVL_SlowAbility>(Ability);
+				if (slow)
+					SlowAbility = slow;
+
 				CharacterASC->RemoveActiveAbility(Ability);
 			}
+			
+			if (SlowAbility && SlowAbility->SlowOrbeSound != nullptr)
+				UGameplayStatics::PlaySoundAtLocation(this, SlowAbility->SlowOrbeSound, Character->GetActorLocation());
+			else if (FireSound != nullptr)
+    			UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
 
 			SpawnedProjectile->SetDamage(Damage);
 		}

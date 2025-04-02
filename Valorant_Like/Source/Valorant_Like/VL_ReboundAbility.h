@@ -19,7 +19,7 @@ public:
 
 	virtual bool CanActivate() const override;
 	
-    	virtual void Deactivate() override;
+    virtual void Deactivate() override;
 
 	virtual void Activate() override;
 
@@ -29,5 +29,5 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Attributes")
 	int ReboundCount = 3;
 
-    	bool bIsActive;
+    bool bIsActive;
 };

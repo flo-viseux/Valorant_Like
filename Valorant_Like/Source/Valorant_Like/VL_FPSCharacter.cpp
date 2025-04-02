@@ -4,9 +4,6 @@
 #include "VL_FPSCharacter.h"
 
 #include "EnhancedInputComponent.h"
-#include "VL_ReloadAbility.h"
-#include "VL_SlowZone.h"
-#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AVL_FPSCharacter::AVL_FPSCharacter()

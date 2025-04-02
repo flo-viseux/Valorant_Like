@@ -6,6 +6,7 @@
 #include "VL_AbilityBase.h"
 #include "VL_FireAbility.h"
 #include "VL_ReloadAbility.h"
+#include "VL_HitAbility.h"
 #include "Components/ActorComponent.h"
 #include "VL_AbilitySystemComponent.generated.h"
 
@@ -46,6 +47,7 @@ struct FSpeedModifier
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAmmoChanged, int32, CurrentAmmo, int32, MaxAmmo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAbilityCooldownChanged, FName, AbilityName, float, RemainingCooldown);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAbilityActiveStateChanged, FName, AbilityName, bool, bIsActive);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAbilityIconInit, FName, AbilityName, UTexture2D*, AbilityIcon);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class VALORANT_LIKE_API UVL_AbilitySystemComponent : public UActorComponent
@@ -67,12 +69,16 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnAbilityActiveStateChanged OnAbilityActiveStateChanged;
 	
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnAbilityIconInit OnAbilityIconInit;
 
+	UFUNCTION(BlueprintCallable)
+	void InitIcons();
+	
 	void Fire();
 	void Reload();
 	void UseCompetenceX();
 	void UseCompetenceC();
-	void Slowed(float Slow);
 	void Hit(float Damage);
 
 	void ActivateAbility(FName AbilityName);
@@ -91,6 +97,8 @@ public:
 	TSubclassOf<UVL_AbilityBase> CompetenceXAbilityClass;
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
 	TSubclassOf<UVL_AbilityBase> CompetenceCAbilityClass;
+	UPROPERTY(EditDefaultsOnly, Category="Abilities")
+	TSubclassOf<UVL_HitAbility> HitAbilityClass;
 	
 	int GetCurrentAmmoCount() const;
 
@@ -144,6 +152,9 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, Category="Attributes")
 	UVL_AbilityBase* CompetenceCAbility;
+	
+	UPROPERTY(VisibleAnywhere, Category="Abilities")
+	UVL_HitAbility* HitAbility;
 	
 	UPROPERTY()
 	TArray<FSpeedModifier> ActiveSpeedModifiers;

@@ -4,6 +4,7 @@
 #include "VL_Projectile.h"
 #include "VL_SlowZoneAbility.h"
 #include "Components/SphereComponent.h"
+#include "VL_FPSCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values
@@ -75,7 +76,12 @@ void AVL_Projectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 {
 	if (!bIsSlowProjectile)
 	{
-		// TODO : apply damage if is valid
+		if (OtherActor && OtherActor != GetOwner())
+		{
+			AVL_FPSCharacter* Character = Cast<AVL_FPSCharacter>(OtherActor);
+			if (Character)
+				Character->Hit(Damage);	
+		}
 	}
 	
 	if (OtherActor && OtherActor != GetOwner() && ProjectileMovement->bShouldBounce == false)

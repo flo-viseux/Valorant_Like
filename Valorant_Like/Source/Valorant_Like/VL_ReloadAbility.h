@@ -23,4 +23,10 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Attributes")
 	int MaxAmmoCount = 30;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
+	UAnimMontage* ReloadAnimation;
+
+private:
+	void OnAnimationEnded(UAnimMontage* Montage, bool bInterrupted);
 };

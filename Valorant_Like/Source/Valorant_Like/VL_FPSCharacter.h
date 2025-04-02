@@ -35,6 +35,8 @@ public:
 	FVector MuzzleOffset;
 	
 	UVL_AbilitySystemComponent* GetAbilitySystemComponent() const;
+	
+	void Hit(float Damage);
 
 
 protected:
@@ -48,6 +50,5 @@ protected:
 	void Reload();
 	void UseCompetenceX();
 	void UseCompentenceC();
-	void Hit(float Damage);
 	virtual void Move(const FInputActionValue& Value) override;
 };

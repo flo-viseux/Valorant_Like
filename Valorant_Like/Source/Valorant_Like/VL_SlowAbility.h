@@ -24,7 +24,11 @@ public:
 	virtual void Activate() override;
 
 	virtual void Init(FName InCompetenceName = "") override;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
+	USoundBase* SlowOrbeSound;
 
 protected:
+	
     bool bIsActive;
 };
