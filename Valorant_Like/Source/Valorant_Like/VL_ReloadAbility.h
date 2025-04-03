@@ -19,6 +19,7 @@ public:
 	virtual bool CanActivate() const override;
 
 	int GetMaxAmmoCount() const;
+	bool GetIsReloading() const;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Attributes")
@@ -28,5 +29,7 @@ protected:
 	UAnimMontage* ReloadAnimation;
 
 private:
-	void OnAnimationEnded(UAnimMontage* Montage, bool bInterrupted);
+	void OnAnimationEnded(UAnimMontage* Montage, bool bInterrupted);	
+
+	bool bIsReloading = false;
 };

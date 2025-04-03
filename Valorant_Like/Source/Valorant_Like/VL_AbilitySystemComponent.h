@@ -99,6 +99,23 @@ public:
 	TSubclassOf<UVL_AbilityBase> CompetenceCAbilityClass;
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
 	TSubclassOf<UVL_HitAbility> HitAbilityClass;
+
+	
+	
+	UPROPERTY(VisibleAnywhere, Category="Attributes")
+	UVL_ReloadAbility* ReloadAbility;
+	
+	UPROPERTY(VisibleAnywhere, Category="Attributes")
+	UVL_FireAbility* FireAbility;
+	
+	UPROPERTY(VisibleAnywhere, Category="Attributes")
+	UVL_AbilityBase* CompetenceXAbility;
+	
+	UPROPERTY(VisibleAnywhere, Category="Attributes")
+	UVL_AbilityBase* CompetenceCAbility;
+	
+	UPROPERTY(VisibleAnywhere, Category="Abilities")
+	UVL_HitAbility* HitAbility;
 	
 	int GetCurrentAmmoCount() const;
 
@@ -140,21 +157,6 @@ protected:
 private:
 	UPROPERTY()
 	TArray<UVL_AbilityBase*> ActiveAbilities;
-	
-	UPROPERTY(VisibleAnywhere, Category="Attributes")
-	UVL_ReloadAbility* ReloadAbility;
-	
-	UPROPERTY(VisibleAnywhere, Category="Attributes")
-	UVL_FireAbility* FireAbility;
-	
-	UPROPERTY(VisibleAnywhere, Category="Attributes")
-	UVL_AbilityBase* CompetenceXAbility;
-	
-	UPROPERTY(VisibleAnywhere, Category="Attributes")
-	UVL_AbilityBase* CompetenceCAbility;
-	
-	UPROPERTY(VisibleAnywhere, Category="Abilities")
-	UVL_HitAbility* HitAbility;
 	
 	UPROPERTY()
 	TArray<FSpeedModifier> ActiveSpeedModifiers;

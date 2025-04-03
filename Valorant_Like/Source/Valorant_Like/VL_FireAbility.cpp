@@ -35,7 +35,9 @@ void UVL_FireAbility::Activate()
 				UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
 				if (AnimInstance != nullptr)
 				{
-					AnimInstance->Montage_Play(FireAnimation);
+					float PlayRate = 1.0f;
+					float BlendInTime = 0.25f;
+					AnimInstance->Montage_Play(FireAnimation, PlayRate, EMontagePlayReturnType::MontageLength, 0.0f, true);
 				}
 			}
 
@@ -66,7 +68,7 @@ void UVL_FireAbility::Activate()
 bool UVL_FireAbility::CanActivate() const
 {
 	UVL_AbilitySystemComponent* CharacterASC = Cast<UVL_AbilitySystemComponent>(GetOuter());
-	if (!CharacterASC || CharacterASC->GetCurrentAmmoCount() == 0) return false;
+	if (!CharacterASC || CharacterASC->GetCurrentAmmoCount() == 0 || CharacterASC->ReloadAbility->GetIsReloading()) return false;
 	
 	return true;
 }
